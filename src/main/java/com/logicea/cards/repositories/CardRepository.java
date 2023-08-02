@@ -1,6 +1,7 @@
 package com.logicea.cards.repositories;
 
-import com.logicea.cards.models.Card;
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
+import com.logicea.cards.models.Card;
 
 /**
  * Repository interface for accessing and managing cards in the database.
@@ -35,7 +36,7 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
      * Searches for cards based on the specified search criteria.
      *
      * @param userId       The ID of the user to whom the cards belong. If null, will not search by userId.
-     * @param name         The name of the cards to search for. If null, will not search by name.
+     * @param cardName         The name of the cards to search for. If null, will not search by name.
      * @param color        The color of the cards to search for. If null, will not search by color.
      * @param status       The status of the cards to search for. If null, will not search by status.
      * @param creationDate The minimum creation date of the cards to search for. If null, will not search by creationDate.
@@ -43,16 +44,16 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
      * @return A Page containing the cards that match the specified search criteria.
      */
     @Query(value = """
-            SELECT * FROM cards._card c 
+            SELECT * FROM cards.`_card` c 
             WHERE (:userId IS NULL OR c.user_id = :userId)
             AND (:cardName IS NULL OR c.name LIKE %:cardName%) 
             AND (:color IS NULL OR c.color LIKE %:color%) 
-            AND (:status IS NULL OR c.status = :status) 
-            AND (:creationDate IS NULL OR c.creation_date = :creationDate)""",
+            AND (:status IS NULL OR c.status LIKE %:status%) 
+            AND (:creationDate IS NULL OR c.creation_date= :creationDate)""",
             nativeQuery = true)
     Page<Card> searchCards(
             @Param("userId") Integer userId,
-            @Param("cardName") String name,
+            @Param("cardName") String cardName,
             @Param("color") String color,
             @Param("status") String status,
             @Param("creationDate") LocalDateTime creationDate,

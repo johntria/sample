@@ -45,7 +45,9 @@ public class CardController {
     @PostMapping
     public ResponseEntity<Card> createCard(@Valid @RequestBody CreateCardDTO dto, Principal principal) {
         log.info("Started Rest request from CardController#createCard. body {} ", dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cardService.createCard(dto, principal.getName()));
+        Card card = cardService.createCard(dto, principal.getName());
+        log.info("Ended Rest request from CardController#createCard. body {} ", dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(card);
     }
     /**
      * Endpoint for retrieving a card with the specified cardId.
@@ -57,7 +59,9 @@ public class CardController {
     @GetMapping(path = "{cardId}")
     public ResponseEntity<Card> retrieveCard(@PathVariable("cardId") Integer cardId, Principal principal) {
         log.info("Started Rest request from CardController#createCard. vars {} ", cardId);
-        return ResponseEntity.ok(cardService.readCard(cardId, principal.getName()));
+        Card card = cardService.readCard(cardId, principal.getName());
+        log.info("Ended Rest request from CardController#createCard. vars {} ", cardId);
+        return ResponseEntity.ok(card);
     }
     /**
      * Endpoint for updating an existing card with the provided information.
@@ -69,7 +73,9 @@ public class CardController {
     @PutMapping
     private ResponseEntity<Card> updateCard(@Valid @RequestBody UpdateCardDTO dto, Principal principal) {
         log.info("Started Rest request from CardController#updateCard. body {} ", dto);
-        return ResponseEntity.ok(cardService.updateCard(dto, principal.getName()));
+        Card card = cardService.updateCard(dto, principal.getName());
+        log.info("Started Rest request from CardController#updateCard. body {} ", card);
+        return ResponseEntity.ok(card);
     }
     /**
      * Endpoint for deleting a card with the specified cardId.
@@ -81,6 +87,8 @@ public class CardController {
     private void deleteCard(@PathVariable("cardId") Integer cardId, Principal principal) {
         log.info("Started Rest request from CardController#deleteCard. vars {} ", cardId);
         cardService.deleteCard(cardId, principal.getName());
+        log.info("Ended Rest request from CardController#deleteCard. vars {} ", cardId);
+
     }
     /**
      * Endpoint for searching for cards based on the criteria specified in the SearchCardCriteriaDTO.
@@ -91,7 +99,9 @@ public class CardController {
      */
     @GetMapping("/search")
     public ResponseEntity<Page<Card>> searchCards(@RequestBody SearchCardCriteriaDTO dto, Principal principal) {
-        log.info("Started Rest request from CardController#searchCards. vars {} ", dto);
-        return ResponseEntity.ok().body(cardService.searchCards(dto, principal.getName()));
+        log.info("Started Rest request from CardController#searchCards. body {} ", dto);
+        Page<Card> cards = cardService.searchCards(dto, principal.getName());
+        log.info("Ended Rest request from CardController#searchCards. body {} ", dto);
+        return ResponseEntity.ok().body(cards);
     }
 }

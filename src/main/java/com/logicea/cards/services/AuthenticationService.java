@@ -49,7 +49,6 @@ public class AuthenticationService {
             throw new EmailAlreadyExist("Email already exist");
         }
         userRepository.save(user);
-        log.info("Finished Rest request from AuthenticationService#register. body {} ", request);
         return new AuthResp(jwtService.generateToken(user));
     }
 
@@ -65,7 +64,6 @@ public class AuthenticationService {
     public AuthResp authenticate(AuthenticationDTO request) {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Invalid credentials"));
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        log.info("Finished Rest request from AuthenticationService#authenticate. body {} ", request);
         return new AuthResp(jwtService.generateToken(user));
     }
 }

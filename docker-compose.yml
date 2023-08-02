@@ -25,22 +25,22 @@ services:
     ################################################################################
     #                             Service                                          #
     ################################################################################
-#  cards-service:
-#    container_name: cards-service
-#    image: cards-service/cards:staging
-#    env_file:
-#      - .env
-#    ports:
-#      - "8081:8081"
-#      - "5081:5081"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://cards-db:3306/cards?autoReconnect=true&allowPublicKeyRetrieval=true
-#      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
-#      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
-#      JDK_JAVA_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5081
-#    volumes:
-#      - ${PWD}/log/cards:/log
-#    depends_on:
-#      cards-db:
-#        condition: service_healthy
-#    restart: always
+  cards-service:
+    container_name: cards-service
+    image: cards-service/cards:staging
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+      - "5081:5081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://cards-db:3306/cards?autoReconnect=true&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      JDK_JAVA_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5081
+    volumes:
+      - ${PWD}/log/cards:/log
+    depends_on:
+      cards-db:
+        condition: service_healthy
+    restart: always

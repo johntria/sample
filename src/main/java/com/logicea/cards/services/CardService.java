@@ -113,7 +113,7 @@ public class CardService {
 	 * @throws UsernameNotFoundException If the user with the given email is not found in the repository.
 	 */
 	public Page<Card> searchCards(SearchCardCriteriaDTO dto, String currentUserEmail) {
-		Sort sortable = EntityUtils.validateAndGroupAllSorts(dto.getSortMap(),Card.class);
+		Sort sortable = EntityUtils.validateAndGroupAllSorts(dto.getSortMap(), Card.class);
 		Pageable pageable = PageRequest.of(dto.getPage(), dto.getSize(), sortable);
 		Integer currentUserId = null;
 		if (!Role.ADMIN.equals(getCurrentRoleByUserEmail(currentUserEmail))) {
@@ -124,11 +124,21 @@ public class CardService {
 				currentUserId,
 				dto.getName(),
 				dto.getColor(),
-				String.valueOf(dto.getStatus()),
+				Status.getValueByStatus(dto.getStatus()),
 				dto.getCreationDate(),
 				pageable);
 	}
 
+	/**
+	 * Checks if the user with the given email is allowed to access the card with the specified cardId.
+	 * If the user is an {@link Role#ADMIN}, they are granted access. Otherwise, it is checked whether the card
+	 * belongs to the
+	 * user.
+	 *
+	 * @param cardId The unique identifier of the card to be accessed.
+	 * @param email  The email of the user attempting to access the card.
+	 * @throws ResourcesNotPermitted If the user is not allowed to access the card with the specified cardId.
+	 */
 	private void areUserAllowedToAccessCard(Integer cardId, String email) {
 		isCardExists(cardId);
 		var currentUserRole = getCurrentRoleByUserEmail(email);
@@ -157,7 +167,8 @@ public class CardService {
 	 *
 	 * @param email The email of the user to retrieve the role for.
 	 * @return The Role of the user.
-	 * @throws UsernameNotFoundException If the user with the given email is not found in the repository or if the role is not found for the user.
+	 * @throws UsernameNotFoundException If the user with the given email is not found in the repository or if the
+	 *                                   role is not found for the user.
 	 */
 	private Role getCurrentRoleByUserEmail(String email) {
 		return userRepository.findRoleByEmail(email)

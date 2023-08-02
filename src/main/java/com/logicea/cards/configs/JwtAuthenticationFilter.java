@@ -16,19 +16,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.logicea.cards.services.JwtService;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Filter class responsible for handling JWT-based authentication for incoming HTTP requests.
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -65,11 +66,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (ExpiredJwtException e) {
+            //todo:wrap it in external
+        } catch (Exception e) {
+            log.warn("Exception in JwtAuthenticationFilter#doFilterInternal due to {} ",e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             Map<String, String> jsonResponse = new HashMap<>();
-            jsonResponse.put("errorTitle", "Access token is expired");
-            jsonResponse.put("error", e.getMessage());
+            jsonResponse.put("errorTitle", "Error with token");
+            jsonResponse.put("error", "Your token is not valid, regenerate token");
             response.setContentType("application/json");
             objectMapper.writeValue(response.getWriter(), jsonResponse);
             return;

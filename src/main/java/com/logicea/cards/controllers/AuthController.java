@@ -35,7 +35,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResp> register(@Valid @RequestBody RegisterUserDTO request) {
         log.info("Started Rest request from AuthController#register. body {} ", request);
-        return ResponseEntity.ok(authService.register(request));
+        AuthResp register = authService.register(request);
+        log.info("Ended Rest request from AuthController#register. body {} ", register);
+        return ResponseEntity.ok(register);
     }
 
     /**
@@ -47,6 +49,8 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResp> authenticate(@Valid @RequestBody AuthenticationDTO request) {
         log.info("Started Rest request from AuthController#authenticate. body {} ", request);
-        return ResponseEntity.ok(authService.authenticate(request));
+        AuthResp authenticate = authService.authenticate(request);
+        log.info("Ended Rest request from AuthController#authenticate. body {} ", request);
+        return ResponseEntity.ok(authenticate);
     }
 }
