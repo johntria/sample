@@ -1,0 +1,15 @@
+# First stage: Build the application
+FROM eclipse-temurin:17.0.7_7-jre as builder
+WORKDIR extracted
+ADD target/*.jar app.jar
+RUN java -Djarmode=layertools -jar app.jar extract
+
+# Second stage: Create the final image
+FROM eclipse-temurin:17.0.7_7-jre
+WORKDIR application
+COPY --from=builder extracted/dependencies/ ./
+COPY --from=builder extracted/spring-boot-loader/ ./
+COPY --from=builder extracted/snapshot-dependencies/ ./
+COPY --from=builder extracted/application/ ./
+
+CMD ["java", "org.springframework.boot.loader.JarLauncher"]

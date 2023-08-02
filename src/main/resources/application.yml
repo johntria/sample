@@ -1,0 +1,26 @@
+###Server Port###
+server:
+  port: 8081
+###Application name###
+spring:
+  application:
+    name: CARDS-SERVICE
+  ###Database connection###
+  datasource:
+    url: jdbc:mysql://localhost:3306/cards?autoReconnect=true&allowPublicKeyRetrieval=true
+    username: username
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  ##Show jpa sql###
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+###Logging in external file###
+logging:
+  file:
+    path: ./log
+    name: ${logging.file.path}/cards.log

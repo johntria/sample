@@ -1,0 +1,46 @@
+services:
+  # ################################################################################
+  #                              Database                                         #
+  # ################################################################################
+  cards-db:
+    container_name: cards-db
+    image: mysql:latest
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+        - ./log/db/lib/cards-db:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "exit | mysql -h localhost -P 3306 -u root -p$$MYSQL_ROOT_PASSWORD" ]
+      interval: 5s
+      timeout: 20s
+      retries: 30
+    ports:
+      - "3306:3306"
+
+    ################################################################################
+    #                             Service                                          #
+    ################################################################################
+#  cards-service:
+#    container_name: cards-service
+#    image: cards-service/cards:staging
+#    env_file:
+#      - .env
+#    ports:
+#      - "8081:8081"
+#      - "5081:5081"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://cards-db:3306/cards?autoReconnect=true&allowPublicKeyRetrieval=true
+#      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+#      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+#      JDK_JAVA_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5081
+#    volumes:
+#      - ${PWD}/log/cards:/log
+#    depends_on:
+#      cards-db:
+#        condition: service_healthy
+#    restart: always
